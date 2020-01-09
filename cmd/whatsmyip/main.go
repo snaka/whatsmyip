@@ -3,6 +3,7 @@ package main
 import (
   "flag"
   "fmt"
+  "log"
   "os"
 
   "github.com/snaka/go-whatsmyip"
@@ -20,7 +21,10 @@ func main() {
     os.Exit(0)
   }
 
-  ip := whatsmyip.DiscoverPublicIP()
+  ip, err := whatsmyip.DiscoverPublicIPBySTUN()
+  if err != nil {
+    log.Fatal(err)
+  }
   fmt.Println(ip)
   os.Exit(0)
 }
