@@ -21,7 +21,7 @@ lint: devel-deps
 	golint -set_exit_status ./...
 
 ## build binary if source code updaded
-bin/%: cmd/%/main.go deps
+bin/%: main.go lib/%/*.go deps
 	go build -v -o $@ $<
 
 ## build
