@@ -6,7 +6,7 @@ import (
   "log"
   "os"
 
-  "github.com/snaka/go-whatsmyip"
+  "github.com/snaka/whatsmyip/lib/whatsmyip"
 )
 
 var (

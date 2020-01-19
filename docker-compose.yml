@@ -5,4 +5,4 @@ services:
     build: .
     tty: true
     volumes:
-      - .:/go/src/github.com/snaka/go-whatsmyip
+      - .:/go/src/github.com/snaka/whatsmyip

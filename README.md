@@ -15,7 +15,7 @@ Discover your public ip address.
 ## Installing
 
 ```
-go get github.com/snaka/go-whatsmyip/cmd/whatsmyip
+go get github.com/snaka/whatsmyip
 ```
 
 ## Usage
