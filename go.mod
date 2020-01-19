@@ -1,4 +1,4 @@
-module github.com/snaka/go-whatsmyip
+module github.com/snaka/whatsmyip
 
 go 1.13
 
