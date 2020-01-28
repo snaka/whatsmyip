@@ -26,22 +26,8 @@ func ShowVersion() error {
 	return nil
 }
 
-// DiscoverPublicIPBySTUN discovers public IP address of executed device by STUN server
-func DiscoverPublicIPBySTUN() (string, error) {
-	ch := make(chan string)
-	go discoverIP(ch)
-
-	ip, ok := <-ch
-	if ok == false {
-		return "", fmt.Errorf("Can't discover public IP")
-	}
-
-	return ip, nil
-}
-
-func discoverIP(ch chan string) {
-	defer close(ch)
-
+// DiscoverPublicIP discovers public IP address of executed device by STUN server
+func DiscoverPublicIP(cb func(string, error)) {
 	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{
 		ICEServers: []webrtc.ICEServer{
 			{
@@ -51,36 +37,36 @@ func discoverIP(ch chan string) {
 	})
 	if err != nil {
 		log.Println("err connection")
+    cb("", err)
 		return
 	}
 
 	peerConnection.OnICECandidate(func(c *webrtc.ICECandidate) {
-		// finish
-		if c == nil {
-			close(ch)
-			return
-		}
+    if c == nil {
+      cb("", nil)
+    }
 		// recieve public ip address
 		if c.Typ == webrtc.ICECandidateTypeSrflx {
-			ch <- c.Address
+      cb(c.Address, nil)
 		}
 	})
 
 	if _, err := peerConnection.CreateDataChannel("", nil); err != nil {
 		log.Println("err crerate data channel")
+    cb("", err)
 		return
 	}
 
 	offer, err := peerConnection.CreateOffer(nil)
 	if err != nil {
 		log.Println("err crerate offer")
+    cb("", err)
 		return
 	}
 
 	if err = peerConnection.SetLocalDescription(offer); err != nil {
 		log.Println("err set local description")
+    cb("", err)
 		return
 	}
-
-	select {}
 }
