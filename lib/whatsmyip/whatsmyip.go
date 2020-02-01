@@ -37,36 +37,36 @@ func DiscoverPublicIP(cb func(string, error)) {
 	})
 	if err != nil {
 		log.Println("err connection")
-    cb("", err)
+		cb("", err)
 		return
 	}
 
 	peerConnection.OnICECandidate(func(c *webrtc.ICECandidate) {
-    if c == nil {
-      cb("", nil)
-    }
+		if c == nil {
+			cb("", nil)
+		}
 		// recieve public ip address
 		if c.Typ == webrtc.ICECandidateTypeSrflx {
-      cb(c.Address, nil)
+			cb(c.Address, nil)
 		}
 	})
 
 	if _, err := peerConnection.CreateDataChannel("", nil); err != nil {
 		log.Println("err crerate data channel")
-    cb("", err)
+		cb("", err)
 		return
 	}
 
 	offer, err := peerConnection.CreateOffer(nil)
 	if err != nil {
 		log.Println("err crerate offer")
-    cb("", err)
+		cb("", err)
 		return
 	}
 
 	if err = peerConnection.SetLocalDescription(offer); err != nil {
 		log.Println("err set local description")
-    cb("", err)
+		cb("", err)
 		return
 	}
 }
