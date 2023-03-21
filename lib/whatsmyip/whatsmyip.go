@@ -6,11 +6,11 @@ import (
 	"runtime"
 
 	"github.com/mbndr/figlet4go"
-	"github.com/pion/webrtc/v2"
+	"github.com/pion/webrtc/v3"
 )
 
 const (
-	version = "v0.1.0"
+	version = "v0.1.1"
 )
 
 // ShowVersion shows build version info
@@ -47,19 +47,21 @@ func DiscoverPublicIP(cb func(string, error)) {
 		}
 		// recieve public ip address
 		if c.Typ == webrtc.ICECandidateTypeSrflx {
-			cb(c.Address, nil)
+			if c.Address != "" { // this can happen twice, once with the address and once with an empty string
+				cb(c.Address, nil)
+			}
 		}
 	})
 
 	if _, err := peerConnection.CreateDataChannel("", nil); err != nil {
-		log.Println("err crerate data channel")
+		log.Println("err creating data channel")
 		cb("", err)
 		return
 	}
 
 	offer, err := peerConnection.CreateOffer(nil)
 	if err != nil {
-		log.Println("err crerate offer")
+		log.Println("err creating offer")
 		cb("", err)
 		return
 	}
@@ -69,4 +71,21 @@ func DiscoverPublicIP(cb func(string, error)) {
 		cb("", err)
 		return
 	}
+}
+
+func DiscoverPublicIPSync() (string, error) {
+	r := make(chan struct {
+		ip  string
+		err error
+	})
+
+	DiscoverPublicIP(func(s string, err error) {
+		r <- struct {
+			ip  string
+			err error
+		}{ip: s, err: err}
+	})
+
+	v := <-r
+	return v.ip, v.err
 }
