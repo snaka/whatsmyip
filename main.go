@@ -18,7 +18,10 @@ func main() {
 	flag.Parse()
 
 	if *showVersion {
-		whatsmyip.ShowVersion()
+		err := whatsmyip.ShowVersion()
+		if err != nil {
+			log.Fatal(err)
+		}
 		os.Exit(0)
 	}
 
@@ -30,6 +33,6 @@ func main() {
 		os.Exit(0)
 	})
 
-	time.Sleep(5 * time.Nanosecond)
+	time.Sleep(100 * time.Millisecond)
 	os.Exit(-1)
 }
