@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"github.com/snaka/whatsmyip/lib/whatsmyip"
 )
@@ -25,14 +24,11 @@ func main() {
 		os.Exit(0)
 	}
 
-	whatsmyip.DiscoverPublicIP(func(ip string, err error) {
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(ip)
-		os.Exit(0)
-	})
+	ip, err := whatsmyip.DiscoverPublicIPSync()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	time.Sleep(100 * time.Millisecond)
-	os.Exit(-1)
+	fmt.Println(ip)
+	os.Exit(0)
 }

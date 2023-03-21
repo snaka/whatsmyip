@@ -47,7 +47,9 @@ func DiscoverPublicIP(cb func(string, error)) {
 		}
 		// recieve public ip address
 		if c.Typ == webrtc.ICECandidateTypeSrflx {
-			cb(c.Address, nil)
+			if c.Address != "" { // this can happen twice, once with the address and once with an empty string
+				cb(c.Address, nil)
+			}
 		}
 	})
 
@@ -69,4 +71,21 @@ func DiscoverPublicIP(cb func(string, error)) {
 		cb("", err)
 		return
 	}
+}
+
+func DiscoverPublicIPSync() (string, error) {
+	r := make(chan struct {
+		ip  string
+		err error
+	})
+
+	DiscoverPublicIP(func(s string, err error) {
+		r <- struct {
+			ip  string
+			err error
+		}{ip: s, err: err}
+	})
+
+	v := <-r
+	return v.ip, v.err
 }
