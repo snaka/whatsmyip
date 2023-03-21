@@ -6,11 +6,11 @@ import (
 	"runtime"
 
 	"github.com/mbndr/figlet4go"
-	"github.com/pion/webrtc/v2"
+	"github.com/pion/webrtc/v3"
 )
 
 const (
-	version = "v0.1.0"
+	version = "v0.1.1"
 )
 
 // ShowVersion shows build version info
@@ -52,14 +52,14 @@ func DiscoverPublicIP(cb func(string, error)) {
 	})
 
 	if _, err := peerConnection.CreateDataChannel("", nil); err != nil {
-		log.Println("err crerate data channel")
+		log.Println("err creating data channel")
 		cb("", err)
 		return
 	}
 
 	offer, err := peerConnection.CreateOffer(nil)
 	if err != nil {
-		log.Println("err crerate offer")
+		log.Println("err creating offer")
 		cb("", err)
 		return
 	}
